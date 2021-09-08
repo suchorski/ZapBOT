@@ -39,4 +39,9 @@ public class BirthdaysService extends AbstractService<BirthdaysRepository, Guild
 		update(birthday);
 	}
 
+	public void setBirthdayRole(GuildBirthday birthday, long roleId) {
+		birthday.setRole(roleId);
+		update(birthday);
+	}
+
 }

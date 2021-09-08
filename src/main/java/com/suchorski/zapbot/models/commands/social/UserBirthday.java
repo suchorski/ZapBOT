@@ -1,6 +1,7 @@
 package com.suchorski.zapbot.models.commands.social;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -29,7 +30,7 @@ import lombok.Setter;
 @EqualsAndHashCode(of = {"id"})
 public class UserBirthday implements Serializable {
 	
-	private static final long serialVersionUID = 6734579173170791143L;
+	private static final long serialVersionUID = -8635469289643230242L;
 
 	@Id
 	@Column(name = "user_id", updatable = false, nullable = false)
@@ -38,6 +39,10 @@ public class UserBirthday implements Serializable {
 	@Column(insertable = false, nullable = true)
 	@ColumnDefault("NULL")
 	private LocalDate date = null;
+	
+	@Column(insertable = false, nullable = false)
+	@ColumnDefault("'1000-01-01 00:00:00'")
+	private Instant lastSet = Instant.ofEpochMilli(0);
 	
 	@OneToOne(optional = false)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_userbirthday_user"))

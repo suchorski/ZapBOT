@@ -50,6 +50,7 @@ server.ssl.keyStoreType=PKCS12
 - [X] Define roles per level (2 for free / 30 for premium)
 - [X] Configure Auto Role
 - [X] Configure announce message
+- [X] Configure birthday message
 - [X] Change nickname (Only for premium)
 
 ### Moderator

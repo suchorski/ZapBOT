@@ -4,8 +4,8 @@ import java.awt.Color;
 
 public class Constants {
 	
-	public static String VERSION = "1.0.1";
-	public static Long BUILD = 2L;
+	public static String VERSION = "1.1.0";
+	public static Long BUILD = 3L;
 	
 	public static class OPTIONS {
 		public static final String PREFFIX = ".";

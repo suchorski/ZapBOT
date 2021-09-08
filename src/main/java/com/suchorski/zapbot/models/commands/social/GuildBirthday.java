@@ -28,7 +28,7 @@ import lombok.Setter;
 @EqualsAndHashCode(of = {"id"})
 public class GuildBirthday implements Serializable {
 	
-	private static final long serialVersionUID = -2966650438352864202L;
+	private static final long serialVersionUID = 169699101408932454L;
 
 	@Id
 	@Column(name = "guild_id", updatable = false, nullable = false)
@@ -37,6 +37,10 @@ public class GuildBirthday implements Serializable {
 	@Column(insertable = false, nullable = true)
 	@ColumnDefault("NULL")
 	private Long channelId = null;
+	
+	@Column(length = 64, insertable = false, nullable = true)
+	@ColumnDefault("NULL")
+	private Long role = null;
 	
 	@OneToOne(optional = false)
 	@JoinColumn(name = "guild_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_guildbirthday_guild"))

@@ -52,6 +52,8 @@ public class BirthdayCommand extends BotCommand {
 			CommandUtils.warning(event, e.getLocalizedMessage());
 		} catch (NothingFoundException e) {
 			CommandUtils.error(event, e.getLocalizedMessage());
+		} catch (Exception e) {
+			CommandUtils.warning(event, e.getLocalizedMessage());
 		}
 	}
 

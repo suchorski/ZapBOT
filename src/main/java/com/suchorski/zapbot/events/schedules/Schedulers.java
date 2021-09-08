@@ -20,6 +20,8 @@ import com.suchorski.zapbot.services.commands.statistics.TextChannelStatisticsSe
 import com.suchorski.zapbot.services.commands.statistics.VoiceChannelStatisticsService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 @Component
@@ -39,7 +41,7 @@ public class Schedulers {
 	}
 	
 	@Scheduled(cron = "0 0 18 * * *")
-	public void birthdays() {
+	public void birthdaysAnnounce() {
 		List<GuildBirthday> guildBirthdays = birthdaysService.findAllToAnnounce();
 		for (GuildBirthday gb : guildBirthdays) {
 			List<UserBirthday> userBirthdays = birthdayService.findBirthdays(gb.getGuild());
@@ -54,6 +56,24 @@ public class Schedulers {
 					builder.addField(String.format("Pelos %d anos,", age), String.format("<@%d>!", ub.getUser().getId()), true);
 				}
 				channel.sendMessage(builder.build()).queue();
+			}
+		}
+	}
+
+	@Scheduled(cron = "0 0 0 * * *")
+	public void birthdaysRoles() {
+		List<GuildBirthday> guildBirthdays = birthdaysService.findAllToAnnounce();
+		for (GuildBirthday gb : guildBirthdays) {
+			List<UserBirthday> userBirthdays = birthdayService.findBirthdays(gb.getGuild());
+			Guild birthdayGuild = bot.getJda().getGuildById(gb.getGuild().getId());
+			if (gb.getRole() != null && birthdayGuild != null) {
+				Role birthdayRole = birthdayGuild.getRoleById(gb.getRole());
+				if (birthdayRole != null) {
+					birthdayGuild.getMembersWithRoles(birthdayRole).forEach(m -> birthdayGuild.removeRoleFromMember(m, birthdayRole).queue());					
+					for (UserBirthday ub : userBirthdays) {
+						birthdayGuild.addRoleToMember(birthdayGuild.retrieveMemberById(ub.getId()).complete(), birthdayRole).queue();
+					}				
+				}
 			}
 		}
 	}
