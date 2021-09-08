@@ -34,7 +34,7 @@ public abstract class BotCommand extends CommandTranslation implements Ordered {
 	@Getter @Setter protected boolean childOnly = false;
 	
 	public BotCommand() {
-		this.botPermissions = new Permission[] { Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EXT_EMOJI, Permission.MANAGE_CHANNEL };
+		this.botPermissions = new Permission[] { Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EXT_EMOJI };
 	}
 
 	@Override

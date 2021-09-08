@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.jagrosh.jdautilities.command.Command;
@@ -20,6 +21,8 @@ import net.dv8tion.jda.api.Permission;
 
 @Component
 public class HelpCommand extends BotCommand {
+	
+	@Value("${bot.url.page}") private String urlPage;
 
 	@Autowired private EventWaiter eventWaiter;
 	@Autowired private List<BotCommand> commands;
@@ -54,29 +57,32 @@ public class HelpCommand extends BotCommand {
 				helpBirthdayCommand, helpLevelRoleCommand, helpProfileCommand, helpRafflesCommand,
 				helpReplyCommand, helpSetRoleCommand, helpStatisticsCommand, helpSubscribeYoutubeCommand
 		};
-		addPermissions(Permission.MESSAGE_MANAGE);
 	}
 
 	@Override
 	protected void zapExecute(CommandEvent event) {
-		Builder builder = new Builder();
-		builder.setEventWaiter(eventWaiter);
-		builder.setColor(Constants.COLORS.DEFAULT);
-		builder.setText(this.help);
-		builder.setItemsPerPage(5);
-		for (BotCommand c : commands) {
-			if (!c.isChildOnly() && !c.isHidden() && !c.isOwnerCommand()) {
-				String args = c.getArguments() == null ? "" : String.format(" %s", c.getArguments());
-				builder.addItems(String.format("**`%s%s%s`** %s", event.getClient().getPrefix(), c.getName(), args, c.getHelp()));
+		if (event.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+			Builder builder = new Builder();
+			builder.setEventWaiter(eventWaiter);
+			builder.setColor(Constants.COLORS.DEFAULT);
+			builder.setText(this.help);
+			builder.setItemsPerPage(5);
+			for (BotCommand c : commands) {
+				if (!c.isChildOnly() && !c.isHidden() && !c.isOwnerCommand()) {
+					String args = c.getArguments() == null ? "" : String.format(" %s", c.getArguments());
+					builder.addItems(String.format("**`%s%s%s`** %s", event.getClient().getPrefix(), c.getName(), args, c.getHelp()));
+				}
 			}
+			builder.setTimeout(5, TimeUnit.MINUTES);
+			builder.setUsers(event.getAuthor());
+			event.getMessage().delete().queue(m -> {
+				builder.build().display(event.getChannel());
+			}, m -> {
+				CommandUtils.error(event.getMessage());
+			});
+		} else {
+			CommandUtils.success(event, String.format("Lista de comandos disponíveis no site: %s/comandos ", urlPage));
 		}
-		builder.setTimeout(5, TimeUnit.MINUTES);
-		builder.setUsers(event.getAuthor());
-		event.getMessage().delete().queue(m -> {
-			builder.build().display(event.getChannel());
-		}, m -> {
-			CommandUtils.error(event.getMessage());
-		});
 	}
 
 }
