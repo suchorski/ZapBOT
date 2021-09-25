@@ -123,7 +123,7 @@ public class BotMember implements Serializable {
 		++messages;
 		xp += (long) (user.getXpMultiplier() * points);
 		while (xp >= getMaxXp()) {
-			xp -= level * getMaxXp();
+			xp -= getMaxXp();
 			++level;
 			levelUp = true;
 		}
